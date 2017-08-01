@@ -1,4 +1,4 @@
-#Alipay
+# Alipay
 ###### Alipay是一个专门解决支付宝手机支付的类库.
 
 #### 综述：
@@ -67,7 +67,7 @@
 	$ValidateSign = new \Alipay\Api\ValidateSign();
 	$ValidateSign->Request();
 
-#### 手机h5调用demo
+#### 手机h5调用demo：
 	文件位于Doc/H5muiPay.html
 
 ###### 感谢您的使用

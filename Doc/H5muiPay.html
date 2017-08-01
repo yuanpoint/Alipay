@@ -1,0 +1,129 @@
+<!DOCTYPE html> 
+<html> 
+    <head> 
+        <meta charset="UTF-8"> 
+        <title>支付</title> 
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" /> 
+        <link rel="stylesheet" href="css/mui.min.css" /> 
+        <script type="text/javascript" src="js/mui.min.js"></script> 
+        <style type="text/css"> 
+            .top {  
+                margin-top: 40px;  
+            }  
+            .weixin {  
+                width: 200px;         
+                height: 50px;   
+                margin-left: 50px;  
+                background: url(../images/icon-weixin.png);     
+            }  
+            .zhifubao {  
+                width: 200px;  
+                height: 50px;  
+              
+               margin-left: 50px;  
+                background: url(../images/alipay.jpg);    
+            }  
+ 
+            #jine{ 
+                -webkit-user-select:text; 
+                text-align:right; 
+                padding:0 1em; 
+                border: 0px; 
+                border-bottom:1px solid #ECB100; 
+                border-radius: 0; 
+                font-size:16px; 
+                width:30%; 
+                outline:none; 
+                text-align:center; 
+            } 
+             
+        </style> 
+    </head> 
+    <body> 
+         <hrader class="mui-bar mui-bar-nav"> 
+             <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a> 
+             <h1 class="mui-title">第三方支付</h1> 
+         </hrader> 
+          
+         <div class="mui-content"> 
+               
+               
+                捐赠金额：<input id="jine" type="number" value="1" /> 元 
+             
+               
+                <div class="top" id="testLogin" > 
+                    <input type="button" class="zhifubao" id="zhifubao" value="支付宝支付" /> 
+                     
+                </div> 
+ 
+                  
+ 
+         </div> 
+<script> 
+        var wxChannel = null; // 微信支付  
+        var aliChannel = null; // 支付宝支付  
+        var channel = null;   //支付通道 
+        mui.init({  
+            swipeBack:true //启用右滑关闭功能  
+        });  
+         
+        mui.plusReady(function() {    
+        // 获取支付通道  
+            plus.payment.getChannels(function(channels){  
+            for (var i in channels) { 
+//                  if (channels[i].id == "wxpay") { 
+//                       wxChannel=channels[i];  
+//                  }else{ 
+                        aliChannel=channels[i];  
+//                  } 
+                }     
+            },function(e){  
+             alert("获取支付通道失败："+e.message);  
+            });  
+        })  
+    
+        document.getElementById('zhifubao').addEventListener('tap',function() {  
+            console.log("支付宝支付");
+            pay('alipay');   
+        })  
+  
+        var ALIPAYSERVER='http://demo.dcloud.net.cn/helloh5/payment/alipay.php?total=';  
+        
+        // 2. 发起支付请求  
+        function pay(id){  
+                // 从服务器请求支付订单  
+                var PAYSERVER='';  
+                if(id=='alipay'){  
+	                PAYSERVER=ALIPAYSERVER;  
+	                channel = aliChannel;  
+            	}
+                var xhr=new XMLHttpRequest();  
+                var amount = document.getElementById('jine').value; 
+                
+                xhr.onreadystatechange=function(){  
+                    switch(xhr.readyState){  
+                        case 4:  
+	                        if(xhr.status==200){ 
+	                        	console.log(xhr.responseText);
+	                            plus.payment.request(channel,xhr.responseText,function(result){  
+	                                plus.nativeUI.alert("支付成功！",function(){  
+	                                back();  
+	                            });  
+	                            },function(error){  
+	                                plus.nativeUI.alert("支付失败：" + error.code);  
+	                            });  
+	                        }else{  
+	                            alert("获取订单信息失败！");  
+	                        }  
+                        break;
+                	}  
+        		}  
+            xhr.open('GET',PAYSERVER+amount);  
+            xhr.send();  
+            
+    }  
+     
+           </script>   
+     <script type="text/javascript" src="js/immersed.js" ></script> 
+    </body> 
+</html>
